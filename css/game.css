@@ -12,7 +12,7 @@ table {
 
 td {
     cursor: pointer;
-    border: 4px solid rgba(252, 169, 3, 0.8);         /*thickness, type of border, (red green blue transparency)*/
+    border: 4px solid rgba(0, 0, 0, 0.8);         /*thickness, type of border, (red green blue transparency)*/
     padding: 0;                                         /*inside spacing*/
     width:  200px;                                      /*setting cell dimentions*/  
     height: 200px;
