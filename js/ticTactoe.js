@@ -36,7 +36,7 @@ let selectedSquares = [];
         
 
             //this adds sound
-            audio('../media/place.mp3');
+            audio('./media/place.mp3');
             if (activePlayer === 'O'){
                 //This portion disables the ability to click while the computer makes its move
                 disableClick();
@@ -53,7 +53,7 @@ let selectedSquares = [];
             //this allows the while loop to keep trying if a square in selected already.
             while(!success) {
                 //random number between 0-8
-                pickSquare = String(Math.floor(Math.random()*9));
+                pickSquare = String(Math.floor(Math.random() * 9));
                 //evaluates if the square has been taken or not
                 if (placeXOrO(pickSquare)){
                     //calling for function
@@ -74,7 +74,7 @@ let selectedSquares = [];
         else if (arrayIncludes('1x', '4x', '7x')) { drawWinLine(304,50,304,558)}
         else if (arrayIncludes('2x', '5x', '8x')) { drawWinLine(508,50,508,558)}
         else if (arrayIncludes('0x', '4x', '8x')) { drawWinLine(100,100,520,520)}
-        else if (arrayIncludes('2x', '4x', '6x')) { drawWinLine(510,508,100,90)}
+        else if (arrayIncludes('6x', '4x', '2x')) { drawWinLine(100,508,510,90)}
         //O
         else if (arrayIncludes('0o', '1o', '2o')) { drawWinLine(50,100,558,100)}
         else if (arrayIncludes('3o', '4o', '5o')) { drawWinLine(50,304,558,304)}
@@ -83,7 +83,7 @@ let selectedSquares = [];
         else if (arrayIncludes('1o', '4o', '7o')) { drawWinLine(304,50,304,558)}
         else if (arrayIncludes('2o', '5o', '8o')) { drawWinLine(508,50,508,558)}
         else if (arrayIncludes('0o', '4o', '8o')) { drawWinLine(100,100,520,520)}
-        else if (arrayIncludes('2o', '4o', '6o')) { drawWinLine(510,508,100,90)}
+        else if (arrayIncludes('6o', '4o', '2o')) { drawWinLine(100,508,510,90)}
         //this portion checks for a tie. It'll determin this when all squares are taken
         else if (selectedSquares.length >= 9) {
             audio('../media/tie.mp3');
@@ -99,3 +99,83 @@ let selectedSquares = [];
         //if all is true, return true
         if (a === true && b === true && c === true) {return true}
     }
+
+    function disableClick() {
+        //this'll make the program unclickable
+        body.style.pointerEvents = 'none';
+        //unclickable for one second
+        setTimeout(function() {body.style.pointerEvents = 'auto';},1000);
+    }
+
+    function audio(audioURL) {
+        //create a new audio object and pass the parameter
+        let audio = new Audio(audioURL);
+        //play audio
+        audio.play();
+    }
+
+    function drawWinLine (coordx1, coordy1, coordx2, coordy2) {
+        //accesses html canvas
+        const canvas = document.getElementById('winLines');
+        //rendering type
+        const c = canvas.getContext('2d');
+        //coords
+        let x1 = coordx1,
+            y1 = coordy1,
+            x2 = coordx2,
+            y2 = coordy2,
+            //temp axis data for animation loop
+            x = x1,
+            y = y1;
+
+    function animateLineDrawing() {
+        //create loop
+        const animationLoop = requestAnimationFrame(animateLineDrawing);
+        //clears content from last loop
+        c.clearRect(0,0,608,608);
+        //starts new path
+        c.beginPath();
+        //moves to starting point
+        c.moveTo(x1,y1);
+        //indicates end point
+        c.lineTo(x,y);
+        //sets width of line
+        c.lineWidth = 10;
+        //styles line
+        c.strokeStyle = 'rgba(70, 255, 33 , .8)';
+        //draws line
+        c.stroke();
+        //double checks for end point
+        if (x1 <= x2 && y1 <= y2) {
+            //adds 10 to endpoint
+            if (x < x2) {x += 10;}
+            //also adds 10 to endpoint
+            if (y < y2) {y += 10;}
+            //this cancels the animation loop if we've reached the endpoint
+            if (x >= x2 && y >= y2) { cancelAnimationFrame(animationLoop); }
+        }
+
+        //same as above, just needed for vertical condition
+        if (x1 <= x2 && y1 >= y2) {
+            if (x < x2) {x += 10;}
+            if (y > y2) {y -= 10;}
+            if (x >= x2 && y <= y2) { cancelAnimationFrame(animationLoop); }
+        }
+    }
+
+    //this function clears the canvas after the win line is drawn
+    function clear() {
+        //start animation loop
+        const animationLoop = requestAnimationFrame(clear);
+        c.clearRect(0,0,608,608);
+        cancelAnimationFrame(animationLoop);
+    }
+
+    //this disallows clicking while victory sound plays
+    disableClick();
+    //play win sound
+    audio('./media/winGame.mp3');
+    //calls animation loop
+    animateLineDrawing();
+    setTimeout(function () { clear(); resetGame(); }, 1000);
+}
