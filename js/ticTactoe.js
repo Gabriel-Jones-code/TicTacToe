@@ -14,11 +14,11 @@ let selectedSquares = [];
             //this checks to see who's turn it is
             if (activePlayer === 'x') {
             //If active player is equal to x.pkg, the x.png is placedin HTMLp
-            select.style.backgroundImage = "url('images/x.png')";
+            select.style.backgroundImage = "url('images/nineX.jpg')";
             }
             else {
                 //If actvePlayer is equal to '0', the 0.png is placed in the png
-                select.style.backgroundImage ='url("images/o.png")';
+                select.style.backgroundImage ='url("images/niceO.jpg")';
             }
 
             //squareNumber and activePlayer are concatenated together and added 
@@ -37,23 +37,26 @@ let selectedSquares = [];
 
             //this adds sound
             audio('./media/place.mp3');
-            if (activePlayer === 'O'){
+            if (activePlayer === 'o'){
                 //This portion disables the ability to click while the computer makes its move
                 disableClick();
                 //This function delays the computer. It'll take one second to make a move
-                setTimeout(function () { computersTurn(); },1000)
+                setTimeout(function (){ computersTurn(); }, 1000)
             }
+            //needed for computerTurn to work
+            return true;
         }
 
         function computersTurn() {
             //boolean is needed for our while loop
             let success = false;
-            //this variable stares a random number 0-8
-            let pickSquare;
+            //this variable stores a random number 0-8
+            let pickSquare
             //this allows the while loop to keep trying if a square in selected already.
             while(!success) {
                 //random number between 0-8
                 pickSquare = String(Math.floor(Math.random() * 9));
+                console.log(pickSquare);
                 //evaluates if the square has been taken or not
                 if (placeXOrO(pickSquare)){
                     //calling for function
@@ -63,7 +66,6 @@ let selectedSquares = [];
             }
         }
     }
-
 
     function checkWinCondtition() {
         //X
@@ -174,8 +176,17 @@ let selectedSquares = [];
     //this disallows clicking while victory sound plays
     disableClick();
     //play win sound
-    audio('./media/winGame.mp3');
+    audio('./media/little_robot_sound_factory_Jingle_Win_Synth_00.mp3');
     //calls animation loop
     animateLineDrawing();
     setTimeout(function () { clear(); resetGame(); }, 1000);
+}
+
+function resetGame() {
+    //iterates through each HTML square
+    for (let i=0; i < 9; i++) {
+        let square = document.getElementById(String(i))
+        square.style.backgroundImage = ''
+    }
+    selectedSquares = [];
 }
